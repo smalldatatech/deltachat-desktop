@@ -185,16 +185,22 @@ class Composer extends React.Component {
     this.pickerButtonRef = React.createRef()
   }
 
+  keyEventToAction (e) {
+    return {
+      send: (e.keyCode === 13 && e.shiftKey),
+      newline: (e.keyCode === 13 && !e.shiftKey)
+    }
+  }
+
   onKeyDown (e) {
-    if (e.keyCode === 13 && e.shiftKey) {
-      this.insertStringAtCursorPosition('\n')
-      e.preventDefault()
-      e.stopPropagation()
-    } else if (e.keyCode === 13 && !e.shiftKey) {
-      this.sendMessage()
+    const action = this.keyEventToAction(e)
+    console.log(action)
+    if (action.newline || action.send) {
       e.preventDefault()
       e.stopPropagation()
     }
+    if (action.newline) this.insertStringAtCursorPosition('\n')
+    if (action.send) this.sendMessage()
   }
 
   componentDidMount () {
