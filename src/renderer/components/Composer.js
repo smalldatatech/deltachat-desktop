@@ -194,13 +194,16 @@ class Composer extends React.Component {
 
   onKeyDown (e) {
     const action = this.keyEventToAction(e)
+
+    if(!action.newline && !action.send) return
+    
     console.log(action)
-    if (action.newline || action.send) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
+    
     if (action.newline) this.insertStringAtCursorPosition('\n')
     if (action.send) this.sendMessage()
+    
+    e.preventDefault()
+    e.stopPropagation()
   }
 
   componentDidMount () {
@@ -245,7 +248,10 @@ class Composer extends React.Component {
   }
 
   handleKeyUp (e) {
-    if (e.keyCode === 13 && e.shiftKey) {
+    const action = this.keyEventToAction(e)
+
+
+    if (action.newline) {
       this.resizeComposer(e.target.value)
     }
   }
